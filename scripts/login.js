@@ -1,18 +1,15 @@
-// scripts/login.js
-import { chromium } from 'playwright';
-import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
+import { chromium } from "playwright";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
 
-// Rutas manuales porque este script corre independiente
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const STORAGE_PATH = path.join(__dirname, '../storage');
-const AUTH_FILE = path.join(STORAGE_PATH, 'auth.json');
+const STORAGE_PATH = path.join(__dirname, "../storage");
+const AUTH_FILE = path.join(STORAGE_PATH, "auth.json");
 
-// Crear carpeta storage si no existe
-if (!fs.existsSync(STORAGE_PATH)){
-    fs.mkdirSync(STORAGE_PATH);
+if (!fs.existsSync(STORAGE_PATH)) {
+  fs.mkdirSync(STORAGE_PATH);
 }
 
 (async () => {
@@ -20,15 +17,14 @@ if (!fs.existsSync(STORAGE_PATH)){
   const context = await browser.newContext();
   const page = await context.newPage();
 
-  console.log('🔹 Navegando a DeepSeek. Inicia sesión MANUALMENTE...');
-  
-  await page.goto('https://chat.deepseek.com/');
+  console.log("🔹 Navigating to DeepSeek. Log in MANUALLY...");
 
-  // Espera larga
-  await page.waitForTimeout(60000); 
+  await page.goto("https://chat.deepseek.com/");
+
+  await page.waitForTimeout(60000);
 
   await context.storageState({ path: AUTH_FILE });
-  console.log(`✅ Sesión guardada en: ${AUTH_FILE}`);
+  console.log(`✅ Session saved to: ${AUTH_FILE}`);
 
   await browser.close();
 })();
