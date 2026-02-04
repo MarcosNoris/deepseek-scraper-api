@@ -1,105 +1,106 @@
 # DeepSeek Bot - API Bridge
 
-Bot que actúa como bridge entre la interfaz web de DeepSeek y una API compatible con OpenAI.
+Bot that acts as a bridge between DeepSeek's web interface and an OpenAI-compatible API.
 
-## 📂 Estructura del Proyecto
+## Project Structure
 
 ```
 deepseek-bot/
 ├── src/
-│   ├── config/           # Constantes y configuración (rutas de archivos, selectores)
+│   ├── config/           # Constants and configuration (file paths, selectors)
 │   │   └── constants.js
-│   ├── controllers/      # Lógica de petición/respuesta (Formato OpenAI)
-│   │   └── chatController.js
-│   ├── routes/           # Definición de endpoints de Express
+│   ├── controllers/      # Request/response logic (OpenAI format)
+│   │   ├── chatController.js
+│   │   └── authController.js
+│   ├── routes/           # Express endpoints definition
 │   │   └── api.js
-│   ├── services/         # Lógica pesada (Playwright, Scraping, Browser)
+│   ├── services/         # Business logic (Playwright, Scraping, Browser)
 │   │   └── deepSeekService.js
-│   └── utils/            # Helpers pequeños (si fueran necesarios)
-├── storage/              # Aquí se guardan auth.json y last_chat_url.txt
-├── scripts/              # Scripts de mantenimiento (login)
+│   └── utils/            # Helper utilities
+│       └── textCleaner.js
+├── storage/              # Stores auth.json and last_chat_url.txt
+├── scripts/              # Maintenance scripts
 │   └── login.js
-├── server.js             # Punto de entrada (Entry point)
-├── cli_only.js           # Versión CLI del bot (sin servidor)
+├── server.js             # Main entry point
 ├── package.json
 ├── .gitignore
 └── README.md
 ```
 
-## 🚀 Instalación
+## Installation
 
 ```bash
-# Instalar dependencias
+# Install dependencies
 npm install
 
-# Ejecutar el script de login (necesario la primera vez)
+# Run login script (required first time)
 npm run login
 ```
 
-## 📝 Uso
+## Usage
 
-### Iniciar el servidor API
+### Start API Server
 
 ```bash
 npm start
 ```
 
-El servidor estará disponible en `http://localhost:3000` con los siguientes endpoints compatibles con OpenAI:
+The server will be available at `http://localhost:3000` with the following OpenAI-compatible endpoints:
 
-- `GET /v1/models` - Lista los modelos disponibles
-- `POST /v1/chat/completions` - Envía un mensaje y recibe una respuesta
+- `GET /v1/models` - Lists available models
+- `POST /v1/chat/completions` - Sends a message and receives a response
 
-### Ejemplo de uso con curl
+### Example with curl
 
 ```bash
 curl http://localhost:3000/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
     "model": "deepseek-scraper",
-    "messages": [{"role": "user", "content": "Hola, ¿cómo estás?"}]
+    "messages": [{"role": "user", "content": "Hello, how are you?"}]
   }'
 ```
 
-## 🏗️ Arquitectura
+## Architecture
 
-### Separación de Responsabilidades
+### Separation of Concerns
 
-- **Config** (`src/config/`): Constantes, rutas de archivos y selectores CSS centralizados
-- **Services** (`src/services/`): Lógica de negocio, manejo del navegador con Playwright
-- **Controllers** (`src/controllers/`): Manejo de peticiones HTTP y formato de respuestas
-- **Routes** (`src/routes/`): Definición de endpoints y enrutamiento
+- **Config** (`src/config/`): Constants, file paths, and CSS selectors centralized
+- **Services** (`src/services/`): Business logic, browser handling with Playwright
+- **Controllers** (`src/controllers/`): HTTP request handling and response formatting
+- **Routes** (`src/routes/`): Endpoint definition and routing
 
-### Ventajas de esta arquitectura:
+### Advantages of this architecture:
 
-1. **Mantenibilidad**: Si DeepSeek cambia un selector CSS, solo se modifica en `constants.js`
-2. **Escalabilidad**: Fácil agregar nuevos servicios o endpoints
-3. **Testabilidad**: Cada capa puede ser testeada independientemente
-4. **Claridad**: Cada archivo tiene una responsabilidad específica
+1. **Maintainability**: If DeepSeek changes a CSS selector, only modify `constants.js`
+2. **Scalability**: Easy to add new services or endpoints
+3. **Testability**: Each layer can be tested independently
+4. **Clarity**: Each file has a specific responsibility
 
-## 🔧 Configuración
+## Configuration
 
-Puedes modificar la configuración en `src/config/constants.js`:
+You can modify settings in `src/config/constants.js`:
 
-- `HEADLESS`: Cambiar a `true` para ejecutar el navegador sin interfaz gráfica
-- `POLLING_INTERVAL`: Tiempo de espera entre verificaciones de streaming (ms)
-- `STABILITY_COUNT`: Número de verificaciones para considerar la respuesta completa
+- `HEADLESS`: Set to `true` to run browser without GUI
+- `POLLING_INTERVAL`: Time between streaming checks (ms)
+- `STABILITY_COUNT`: Number of checks to consider response complete
 
-## 📦 Scripts disponibles
+## Available Scripts
 
-- `npm start` - Inicia el servidor API
-- `npm run login` - Ejecuta el script de login para guardar la sesión
+- `npm start` - Starts the API server
+- `npm run login` - Executes login script to save session
 
-## 🔐 Archivos de Sesión
+## Session Files
 
-Los archivos de sesión se guardan en la carpeta `storage/`:
+Session files are stored in the `storage/` folder:
 
-- `auth.json`: Contiene las cookies y el estado de autenticación
-- `last_chat_url.txt`: URL del último chat para continuar la conversación
+- `auth.json`: Contains cookies and authentication state
+- `last_chat_url.txt`: URL of the last chat to continue conversation
 
-**Nota**: Estos archivos están excluidos de git por seguridad.
+**Note**: These files are git-ignored for security.
 
-## 🛡️ Seguridad
+## Security
 
-- Los archivos de autenticación están en `.gitignore`
-- No se exponen credenciales en el código
-- La sesión se reutiliza para evitar múltiples logins
+- Authentication files are in `.gitignore`
+- No credentials exposed in code
+- Session is reused to avoid multiple logins

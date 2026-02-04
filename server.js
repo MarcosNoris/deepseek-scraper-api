@@ -1,4 +1,3 @@
-// server.js
 import express from "express";
 import cors from "cors";
 import apiRoutes from "./src/routes/api.js";
@@ -32,6 +31,8 @@ app.listen(PORT, async () => {
       console.warn("⚠️ Could not restore session:", error.message);
     }
   } else {
-    console.log("🔹 No session found. POST /v1/auth with email and password to authenticate.");
+    console.log(
+      "🔹 No session found. POST /v1/auth with email and password to authenticate.",
+    );
   }
 });
