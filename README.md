@@ -1,6 +1,6 @@
-# DeepSeek Bot - API Bridge
+# DeepSeek Custom API - API Bridge
 
-Bot that acts as a bridge between DeepSeek's web interface and an OpenAI-compatible API.
+API that acts as a bridge between DeepSeek's web interface and an OpenAI-compatible API.
 
 ## Project Structure
 
