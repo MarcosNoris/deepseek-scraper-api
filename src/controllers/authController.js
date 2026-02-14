@@ -12,7 +12,7 @@ export async function authenticate(req, res) {
 
   try {
     await deepSeekService.authenticate(email, password);
-
+    await deepSeekService.init();
     res.json({
       success: true,
       message: "Authentication successful. Session saved.",

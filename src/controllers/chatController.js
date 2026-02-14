@@ -22,16 +22,17 @@ export const createChatCompletion = async (req, res) => {
       .json({ error: { message: "Service not ready. Please authenticate via POST /v1/auth first." } });
   }
 
-  const { messages, model } = req.body;
 
-  if (!messages || !Array.isArray(messages)) {
+  const { message: messages, model, tools } = req.body;
+
+  if (!messages) {
     return res.status(400).json({ error: { message: "Invalid format." } });
   }
 
   // Extract last user message
-  const lastUserMessage = messages.reverse().find((m) => m.role === "user");
+  
 
-  if (!lastUserMessage) {
+  if (!messages.content) {
     return res
       .status(400)
       .json({ error: { message: "A user message is required." } });
@@ -39,26 +40,14 @@ export const createChatCompletion = async (req, res) => {
 
   try {
     console.log(`📩 [API] Processing message...`);
-    const responseText = await deepSeekService.sendMessage(
-      lastUserMessage.content,
-    );
+    const processedResponse = await deepSeekService.ProcessUserMessage(req.body);
 
     // OpenAI format
     res.json({
       id: `chatcmpl-${uuidv4()}`,
-      object: "chat.completion",
       created: Math.floor(Date.now() / 1000),
       model: model || "deepseek-scraper",
-      choices: [
-        {
-          index: 0,
-          message: {
-            role: "assistant",
-            content: responseText,
-          },
-          finish_reason: "stop",
-        },
-      ],
+      response: processedResponse,
       usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
     });
   } catch (error) {
