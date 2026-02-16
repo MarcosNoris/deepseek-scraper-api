@@ -20,7 +20,7 @@ app.get("/health", (req, res) => {
   });
 });
 
-app.listen(PORT, async () => {
+app.listen(PORT, "0.0.0.0", async () => {
   console.log(`🚀 API Server listening on http://localhost:${PORT}`);
 
   if (fs.existsSync(AUTH_FILE)) {
