@@ -195,9 +195,14 @@ class DeepSeekService {
   #concat_text_with_available_tools(text, tools){
     const fullText = `
       [AVAILABLE_TOOLS]
-        ${tools.map(tool => `* ${tool.name}: ${tool.description}`).join('\n')}
+      ${tools.map(tool => `- NAME: ${tool.name}
+      - DESCRIPTION: ${tool.description}
+      - ARGUMENTS: ${JSON.stringify(tool.args)}
+      - REQUIRED_ARGS: ${JSON.stringify(tool.required_args)}
+
+                             `).join('\n')}
       [USER_QUERY]
-      ${text}
+       ${text}
     `
     return fullText;
   }
