@@ -17,3 +17,6 @@ JSON
   "tool": { "name": "string", "args": {} } o null,
   "finish_reason": "finish" | "tool_call"
 }
+REGLAS INQUEBRANTABLES:
+Bajo ningun conepto intentes llamar a una tool que no exista. Solamente pudes seleccionar tools que esten incuidos en las opciones que te 
+dio el usuario.

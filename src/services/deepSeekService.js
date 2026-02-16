@@ -94,7 +94,7 @@ class DeepSeekService {
       if (savedUrl.includes("chat.deepseek.com")) targetUrl = savedUrl;
     }
 
-    await this.page.goto(targetUrl, {timeout: 120_000});
+    await this.page.goto(targetUrl, {timeout: 360_000});
     await this.page.waitForSelector(SELECTORS.TEXTAREA, { timeout: 60000 });
 
     this.isReady = true;
@@ -105,6 +105,34 @@ class DeepSeekService {
     console.log("📨 [DeepSeekService] Sending system prompt...");
     await this.sendMessage(systemPrompt, true);
     console.log("✅ [DeepSeekService] System prompt sent successfully.");
+  }
+
+  async createNewChat() {
+    if (!this.isReady || !this.page) {
+      throw new Error("Service not ready. Please authenticate and initialize first.");
+    }
+    if (this.isProcessing) {
+      throw new Error("BUSY");
+    }
+
+    console.log("🔹 [DeepSeekService] Creating new chat...");
+
+    const newChatButton = this.page.locator(SELECTORS.NEW_CHAT_BUTTON);
+    await newChatButton.click({ timeout: 10000 });
+    await this.page.waitForTimeout(2000);
+
+    // Wait for the new chat interface to be ready
+    await this.page.waitForSelector(SELECTORS.TEXTAREA, { timeout: 15000, state: "visible" });
+
+    const currentUrl = this.page.url();
+    fs.writeFileSync(CHAT_URL_FILE, currentUrl);
+
+    console.log("✅ [DeepSeekService] New chat created successfully.");
+    const systemPrompt = fs.readFileSync(SYSTEM_PROMPT_FILE, "utf-8");
+    console.log("📨 [DeepSeekService] Sending system prompt...");
+    await this.sendMessage(systemPrompt, true);
+    console.log("✅ [DeepSeekService] System prompt sent successfully.");
+    return { url: currentUrl };
   }
 
   async sendMessage(text, skipTools = false) {
@@ -118,7 +146,7 @@ class DeepSeekService {
         .locator(SELECTORS.RESPONSE_BLOCK)
         .count();
 
-      const messageToSend = skipTools ? text : this.#concat_text_with_available_tools(text, []);
+      const messageToSend = text
       await this.page.fill(SELECTORS.TEXTAREA, messageToSend);
       await this.page.waitForTimeout(300);
       await this.page.locator(SELECTORS.TEXTAREA).press("Enter");

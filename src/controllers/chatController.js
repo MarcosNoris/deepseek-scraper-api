@@ -15,6 +15,30 @@ export const listModels = (req, res) => {
   });
 };
 
+export const newChat = async (req, res) => {
+  if (!deepSeekService.isReady) {
+    return res.status(503).json({
+      error: {
+        message:
+          "Service not ready. Please authenticate via POST /v1/auth first.",
+      },
+    });
+  }
+
+  try {
+    console.log(`📩 [API] Creating new chat...`);
+    const result = await deepSeekService.createNewChat();
+    res.json({ success: true, url: result.url });
+  } catch (error) {
+    if (error.message === "BUSY") {
+      return res.status(429).json({
+        error: { message: "The system is busy processing another request." },
+      });
+    }
+    res.status(500).json({ error: { message: error.message } });
+  }
+};
+
 export const createChatCompletion = async (req, res) => {
   if (!deepSeekService.isReady) {
     return res.status(503).json({
