@@ -9,7 +9,7 @@ export const STORAGE_STORAGE = STORAGE_PATH;
 export const AUTH_FILE = path.join(STORAGE_PATH, "auth.json");
 export const CHAT_URL_FILE = path.join(STORAGE_STORAGE, "last_chat_url.txt");
 export const SYSTEM_PROMPT_FILE = path.join(__dirname, "../prompts/system.txt");
-export const ACTUAL_TOOLS = ['get_time'];
+export const ACTUAL_TOOLS = ["get_time"];
 
 export const SELECTORS = {
   TEXTAREA: "textarea",
@@ -18,7 +18,7 @@ export const SELECTORS = {
 };
 
 export const CONFIG = {
-  HEADLESS: false,
+  HEADLESS: true,
   POLLING_INTERVAL: 500,
   STABILITY_COUNT: 3, // How many times the text must repeat to consider it complete
 };
