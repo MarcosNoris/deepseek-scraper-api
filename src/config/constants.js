@@ -18,7 +18,7 @@ export const SELECTORS = {
 };
 
 export const CONFIG = {
-  HEADLESS: false,
+  HEADLESS: true,
   POLLING_INTERVAL: 500,
   STABILITY_COUNT: 3, // How many times the text must repeat to consider it complete
 };
