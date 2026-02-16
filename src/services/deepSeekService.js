@@ -94,7 +94,7 @@ class DeepSeekService {
       if (savedUrl.includes("chat.deepseek.com")) targetUrl = savedUrl;
     }
 
-    await this.page.goto(targetUrl);
+    await this.page.goto(targetUrl, {timeout: 120_000});
     await this.page.waitForSelector(SELECTORS.TEXTAREA, { timeout: 60000 });
 
     this.isReady = true;
@@ -176,20 +176,20 @@ class DeepSeekService {
       throw new Error('Invalid message format')
     }
     const { tools, message, model } = content;
-    
+
     if(message.role === 'user'){
       const messageToSend = this.#concat_text_with_available_tools(message.content, tools);
       const response = await this.sendMessage(messageToSend);
-      return this.ProccessAIResponse(response);  
+      return this.ProccessAIResponse(response);
     }else if(message.role === 'tool'){
       if(!message.function_name){
         throw new Error('Invalid message format')
       }
       const toolResponse = this.#concat_text_with_tool_response(message, tools);
       const response = await this.sendMessage(toolResponse);
-      return this.ProccessAIResponse(response);  
+      return this.ProccessAIResponse(response);
     }
-    
+
   }
 
   #concat_text_with_available_tools(text, tools){
@@ -221,7 +221,7 @@ class DeepSeekService {
       name: '',
       res: ''
     }
-    
+
     switch(toolName){
       case 'get_time':
         response.name = toolName;

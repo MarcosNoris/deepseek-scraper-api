@@ -17,11 +17,13 @@ export const listModels = (req, res) => {
 
 export const createChatCompletion = async (req, res) => {
   if (!deepSeekService.isReady) {
-    return res
-      .status(503)
-      .json({ error: { message: "Service not ready. Please authenticate via POST /v1/auth first." } });
+    return res.status(503).json({
+      error: {
+        message:
+          "Service not ready. Please authenticate via POST /v1/auth first.",
+      },
+    });
   }
-
 
   const { message: messages, model, tools } = req.body;
 
@@ -30,7 +32,6 @@ export const createChatCompletion = async (req, res) => {
   }
 
   // Extract last user message
-  
 
   if (!messages.content) {
     return res
@@ -40,7 +41,9 @@ export const createChatCompletion = async (req, res) => {
 
   try {
     console.log(`📩 [API] Processing message...`);
-    const processedResponse = await deepSeekService.ProcessUserMessage(req.body);
+    const processedResponse = await deepSeekService.ProcessUserMessage(
+      req.body,
+    );
 
     // OpenAI format
     res.json({
@@ -48,7 +51,7 @@ export const createChatCompletion = async (req, res) => {
       created: Math.floor(Date.now() / 1000),
       model: model || "deepseek-scraper",
       response: processedResponse,
-      usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
+      usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 }
     });
   } catch (error) {
     if (error.message === "BUSY") {
