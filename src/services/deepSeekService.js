@@ -222,26 +222,16 @@ class DeepSeekService {
 
   #concat_text_with_available_tools(text, tools){
     const fullText = `
-      [AVAILABLE_TOOLS]
-      ${tools.map(tool => `- NAME: ${tool.name}
-      - DESCRIPTION: ${tool.description}
-      - ARGUMENTS: ${JSON.stringify(tool.args)}
-      - REQUIRED_ARGS: ${JSON.stringify(tool.required_args)}
-
-                             `).join('\n')}
-      [USER_QUERY]
-       ${text}
+      "AVAILABLE_TOOLS": ${tools.length ? JSON.stringify(tools) : 'null'}
+      "USER_QUERY":  ${text}
     `
     return fullText;
   }
 
   #concat_text_with_tool_response(toolResponse, tools){
     const fullText = `
-      [AVAILABLE_TOOLS]
-        ${tools.map(tool => `* ${tool.name}: ${tool.description}`).join('\n')}
-      [TOOL_RESPONSE]
-        ${toolResponse.function_name}
-        ${toolResponse.content}
+      "AVAILABLE_TOOLS": ${tools.length ? JSON.stringify(tools) : 'null'}
+      "TOOL_RESPONSE": ${JSON.stringify(toolResponse)}
     `
     return fullText;
   }
